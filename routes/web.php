@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegisterController;
 
 /*
@@ -40,9 +41,17 @@ Route::get('/about', function () {
 Route::get('/blog', [PostController::class, 'index']);
 Route::get('/post/{post:slug}', [PostController::class, 'show']); 
 Route::get('/categories',[CategoryController::class,'index']);
-Route::get('/login',[LoginController::class, 'index']);
-Route::get('/register',[RegisterController::class, 'create']);
+
+Route::get('/login',[LoginController::class, 'index'])->name('login')->middleware('guest');
+Route::post('/login',[LoginController::class, 'authenticate']);
+
+Route::post('/logout',[LoginController::class, 'logout']);
+
+
+Route::get('/register',[RegisterController::class, 'create'])->middleware('guest');
 Route::post('/register',[RegisterController::class, 'store']);
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth');
 
 // Route::get('/categories/{category:slug}', function(Category $category){
 //     return view('blog', [
