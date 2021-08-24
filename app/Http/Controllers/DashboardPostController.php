@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class DashboardPostController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,11 +14,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('categories', [
-            'title' => 'Post Categories',
-            // 'active' => 'categories',
-            'categories'=>Category::all()
+        return view('dashboard.blog.index', [
+            'blog' => Post::where('user_id', Auth()->user()->id)->get(),
         ]);
+        //
     }
 
     /**
@@ -45,21 +44,23 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show(Post $blog)
     {
-        //
+        return view('dashboard.blog.show', [
+            'post' => $blog
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(Category $category)
+    public function edit(Post $post)
     {
         //
     }
@@ -68,10 +69,10 @@ class CategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Post $post)
     {
         //
     }
@@ -79,11 +80,12 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy(Post $post)
     {
         //
     }
+    
 }
