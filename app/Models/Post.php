@@ -13,7 +13,8 @@ class Post extends Model
         'title', 
         'category_id',
         'slug',
-        'author', 
+        'author',
+        'user_id', 
         'excerpt',
         'body'];
         //protected $guarded = ['id'];
