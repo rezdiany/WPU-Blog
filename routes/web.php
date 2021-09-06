@@ -38,7 +38,7 @@ Route::get('/about', function () {
 
     ]);
 });
-Route::get('/blog', [PostController::class, 'index']);
+Route::get('/blog', [PostController::class, 'index'])->name('blog');
 Route::get('/post/{post:slug}', [PostController::class, 'show']); 
 Route::get('/categories',[CategoryController::class,'index']);
 

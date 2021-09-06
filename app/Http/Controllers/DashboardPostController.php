@@ -77,9 +77,12 @@ class DashboardPostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post)
+    public function edit(Post $blog)
     {
-        //
+        return view('dashboard.blog.edit',[
+            'categories' => Category::all(),
+            'blog' => $blog
+        ]);
     }
 
     /**
@@ -89,10 +92,28 @@ class DashboardPostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request, Post $blog)
     {
-        //
-    }
+        $rules =[
+            'title' => 'required|max:255',
+            'category_id' => 'required',
+            //eror karena slug sudah ada 
+            // 'slug' => 'required|unique:posts', 
+            'body' => 'required'
+        ];
+        if($request->slug != $blog->slug) {
+            $rules['slug'] = 'required|unique:posts';
+        }
+        $validatedData = $request -> validate($rules);
+
+        $validatedData['user_id'] = auth()->user()->id;
+        $validatedData['excerpt'] = Str::limit(strip_tags($request->body), 200);
+        Post::where('id', $blog->id)
+            ->update($validatedData);
+
+        return redirect('/dashboard/blog')->with('success','Post Has Been Update! ');
+
+        }
 
     /**
      * Remove the specified resource from storage.
@@ -100,9 +121,11 @@ class DashboardPostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy(Post $blog)
     {
-        
+        Post::destroy($blog->id);
+
+        return redirect('/dashboard/blog')->with('success','Post has been deleted ');
     }
 
     public function checkSlug(Request $request) {
