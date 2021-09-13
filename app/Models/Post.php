@@ -16,6 +16,7 @@ class Post extends Model
         'author',
         'user_id', 
         'excerpt',
+        'image',
         'body'];
         //protected $guarded = ['id'];
 
