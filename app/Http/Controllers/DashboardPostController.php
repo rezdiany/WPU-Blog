@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 
 class DashboardPostController extends Controller
@@ -106,12 +107,24 @@ class DashboardPostController extends Controller
             'category_id' => 'required',
             //eror karena slug sudah ada 
             // 'slug' => 'required|unique:posts', 
+            'image' => 'image|file|max:1024', //max = maximal ukuran, min = minimal ukuran, size = persis berapa
             'body' => 'required'
         ];
+        
         if($request->slug != $blog->slug) {
             $rules['slug'] = 'required|unique:posts';
         }
+        
         $validatedData = $request -> validate($rules);
+        
+        if($request->file('image')) {
+            if($request->oldImage){
+                Storage::delete($request->oldImage);
+            }
+            $validatedData['image'] = $request->file('image')->store('post-images');
+        
+        }
+        
 
         $validatedData['user_id'] = auth()->user()->id;
         $validatedData['excerpt'] = Str::limit(strip_tags($request->body), 200);
@@ -130,6 +143,9 @@ class DashboardPostController extends Controller
      */
     public function destroy(Post $blog)
     {
+        if($blog->image) {
+            Storage::delete($blog->image);
+        }
         Post::destroy($blog->id);
 
         return redirect('/dashboard/blog')->with('success','Post has been deleted ');

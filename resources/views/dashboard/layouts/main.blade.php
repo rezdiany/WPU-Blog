@@ -34,6 +34,34 @@
       <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
         <script src="/assets/js/dashboard.js"></script>
         <script type="text/javascript" src="/assets/js/trix.js"></script>
-
+        <script>
+          const title = document.querySelector('#title');
+          const slug = document.querySelector('#slug');
+      
+          title.addEventListener('change', function(){ 
+              fetch('/dashboard/blog/checkSlug?title=' + title.value)
+              .then(response => response.json())
+              .then(data => slug.value = data.slug)
+          });
+      
+          document.addEventListener('trix-file-accept', function(e){
+              e.preventDefault();
+          });
+      
+          function previewImage() {
+            const image = document.querySelector('#image');
+            const imgPreview = document.querySelector('.img-preview');
+            
+            imgPreview.style.display = 'block';
+      
+            const oFReader = new FileReader();
+            oFReader.readAsDataURL(image.files[0]);
+      
+            oFReader.onload = function(oFREvent) {
+              imgPreview.src = oFREvent.target.result;
+            }
+      
+          }
+      </script>
     </body>
 </html>
